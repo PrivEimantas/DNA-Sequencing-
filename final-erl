@@ -1,0 +1,111 @@
+-module(cw).
+-export([find_patterns/2]).
+-export([find_patterns/7]).
+-export([del_from_start/1]).
+
+-import(string,[slice/3] ).
+-import(lists,[append/1] ).
+
+
+
+del_from_start(List)->
+	{L1, [_|L2]} = lists:split(0,List),
+	L1 ++ L2.
+
+find_patterns(String,Patterns)->
+	FinalResults = [],
+	CurrentResult = [],
+	OffSet=0,
+	CurrentPattern = lists:nth(1,Patterns),
+	TempString= String,
+	find_patterns(String,Patterns,FinalResults,CurrentResult,OffSet,CurrentPattern,TempString).
+
+find_patterns(String,Patterns,FinalResults,CurrentResult,OffSet,CurrentPattern,TempString)->
+
+	
+	LengthOfPatterns = length(Patterns),
+	LengthofTempString = length(TempString),
+	LengthofCurPat = length(CurrentPattern),
+
+	if
+		% If no more patterns left then print final output
+		LengthOfPatterns == 0 -> io:fwrite("~p~n",[FinalResults]);
+		
+		% else 
+		true -> if
+					% terminating case for current temp string
+					LengthofTempString < LengthofCurPat -> 
+						NewPatterns = del_from_start(Patterns),
+						NewFinalResults = lists:append(FinalResults,[CurrentResult]),
+						NewTempString = String,
+						NewPatternsLength = length(NewPatterns),
+						if
+							NewPatternsLength == 0 ->
+								find_patterns(String,NewPatterns,NewFinalResults,CurrentResult,OffSet+1,CurrentPattern,NewTempString);
+							true ->
+								NewCurrentPattern = lists:nth(1,NewPatterns),
+								find_patterns(String,NewPatterns,NewFinalResults,[],0,NewCurrentPattern,NewTempString)
+						end;
+						
+
+
+					
+					% else still valid current string
+					true -> 
+						Temp1String = string:slice(TempString,0,LengthofCurPat),
+						X =string:equal(Temp1String,CurrentPattern),
+						case X of
+							true-> 
+								New1CurrentResult = lists:append(CurrentResult,[OffSet]),
+								NewTempString = string:slice(TempString,1),
+								%io:fwrite("here: ~p~n",[New1CurrentResult]),
+								find_patterns(String,Patterns,FinalResults,New1CurrentResult,OffSet+1,CurrentPattern,NewTempString);
+							% not equal, so slice and continue to next
+							false -> 
+								NewTempString = string:slice(TempString,1),
+								find_patterns(String,Patterns,FinalResults,CurrentResult,OffSet+1,CurrentPattern,NewTempString)
+
+						end
+
+				end
+			
+	end.
+
+%	LengthofTempString = string:length(TempString),
+%	LengthofCurPat = string:length(CurrentPattern),
+
+
+
+%	if
+		% break condition, stop if string
+%		LengthofTempString<LengthofCurPat -> io:fwrite("~p~n",[FinalResults]) 
+		
+
+%		true -> true
+			
+%	end
+
+
+%	Temp1String = string:slice(String,0,LengthofCurPat),
+	
+%	X =string:equal(Temp1String,CurrentPattern),
+%	NewCurrentResult= case X of
+%		 true-> lists:append(CurrentResult,[OffSet]);
+%		 false -> CurrentResult
+%	end,
+
+	
+%	TemporaryString= string:slice(String,1),
+%	io:fwrite("~p~n",[LengthOfPatterns]).
+
+	
+
+
+		
+
+
+
+	
+
+
+

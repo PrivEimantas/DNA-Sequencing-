@@ -39,3 +39,9 @@ Outputs..
  offsets: { C: [2,5,8], CG: [2,5,8] }
  }
 }
+
+We also use Erlang
+data   Patterns   Call                       Output
+"AAA" [ "AA"] cw:find_patterns("AAA",["AA"]) [[0,1]]
+
+
